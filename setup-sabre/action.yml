@@ -6,6 +6,10 @@ inputs:
         required: false
         default: latest
         description: The version of Sabre to install. (e.g. "latest", "canary", "x.x.x")
+    github-token:
+        required: false
+        default: ${{  github.server_url == 'https://github.com' && github.token || '' }}
+        description: Personal access token (PAT) used to fetch tags from sabre-lang/sabre repository. Recommended for avoiding GitHub API rate limiting.
 
 runs:
     using: 'composite'
@@ -13,6 +17,8 @@ runs:
         - name: Download Sabre
           shell: bash
           run: curl -fsSL https://sabre.rroessler.io/install.sh | bash -s -- --tag ${{ inputs.sabre-version }}
+          env:
+              GITHUB_TOKEN: ${{ inputs.github-token }}
 
         - name: Update Environment
           if: runner.os == 'Windows'
