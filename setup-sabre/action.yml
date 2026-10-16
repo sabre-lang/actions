@@ -1,0 +1,21 @@
+name: Setup Sabre
+description: Download, install and setup Sabre to your path.
+
+inputs:
+    sabre-version:
+        required: false
+        default: latest
+        description: The version of Sabre to install. (e.g. "latest", "canary", "x.x.x")
+
+runs:
+    using: 'composite'
+    steps:
+        - name: Download Sabre (Windows)
+          if: runner.os == 'Windows'
+          shell: powershell
+          run: irm https://sabre.rroessler.io/install.ps1 | iex { $args[0] } -- -Tag ${{ inputs.sabre-version }}
+
+        - name: Download Sabre (Unix)
+          if: runner.os != 'Windows'
+          shell: bash
+          run: curl -fsSL https://sabre.rroessler.io/install.sh | bash -s -- --tag ${{ inputs.sabre-version }}

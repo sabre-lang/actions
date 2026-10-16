@@ -1,0 +1,27 @@
+name: Test Actions
+
+on:
+    workflow_dispatch:
+    push: { branches: [main] }
+
+jobs:
+    setup-sabre:
+        runs-on: ${{ matrix.os }}
+        continue-on-error: true
+        strategy:
+            matrix:
+                os: [ubuntu-latest, macos-latest, windows-latest]
+                sabre-version: [latest, '0.4.0-canary', '0.3.0']
+
+        steps:
+            - name: Checkout Repository
+              uses: actions/checkout@v7
+
+            - name: Setup Sabre
+              uses: ./setup-sabre
+              with:
+                  sabre-version: ${{ matrix.sabre-version }}
+
+            - name: Gather Revision
+              id: sabre-revision
+              run: sabre --revision
