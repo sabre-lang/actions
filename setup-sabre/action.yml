@@ -10,12 +10,16 @@ inputs:
 runs:
     using: 'composite'
     steps:
-        - name: Download Sabre (Windows)
-          if: runner.os == 'Windows'
-          shell: powershell
-          run: irm https://sabre.rroessler.io/install.ps1 | iex { $args[0] } -- -Tag ${{ inputs.sabre-version }}
-
-        - name: Download Sabre (Unix)
-          if: runner.os != 'Windows'
+        - name: Download Sabre
           shell: bash
           run: curl -fsSL https://sabre.rroessler.io/install.sh | bash -s -- --tag ${{ inputs.sabre-version }}
+
+        - name: Update Environment
+          if: runner.os == 'Windows'
+          shell: powershell
+          run: Join-Path $HOME ".sabre\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+
+        - name: Update Environment
+          if: runner.os != 'Windows'
+          shell: bash
+          run: echo "$HOME/.sabre/bin" > $GITHUB_PATH

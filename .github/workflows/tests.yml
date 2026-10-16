@@ -6,12 +6,13 @@ on:
 
 jobs:
     setup-sabre:
+        name: Setup Test '${{ matrix.os }}'
         runs-on: ${{ matrix.os }}
         continue-on-error: true
         strategy:
             matrix:
                 os: [ubuntu-latest, macos-latest, windows-latest]
-                sabre-version: [latest, '0.4.0-canary', '0.3.0']
+                sabre-version: [latest, '0.4.0-stable', '0.4.0-canary']
 
         steps:
             - name: Checkout Repository
